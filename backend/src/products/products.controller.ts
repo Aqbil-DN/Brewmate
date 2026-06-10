@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseUUIDPipe } from '@nestjs/common';
 import { ProductsService } from './products.service.js';
 import { ProductQueryDto } from './dto/product-query.dto.js';
 
@@ -12,7 +12,7 @@ export class ProductsController {
   }
 
   @Get(':id')
-  getProductDetail(@Param('id') id: string) {
+  getProductDetail(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.getProductDetail(id);
   }
 }
