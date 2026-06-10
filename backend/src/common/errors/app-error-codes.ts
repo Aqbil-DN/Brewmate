@@ -30,6 +30,10 @@ export const AppErrorCodes = {
 
   // ── User ─────────────────────────────────────────────────
   USER_NOT_FOUND: 'USER_NOT_FOUND',
+  PHONE_ALREADY_EXISTS: 'PHONE_ALREADY_EXISTS',
+  PREFERENCES_NOT_FOUND: 'PREFERENCES_NOT_FOUND',
+  ADDRESS_NOT_FOUND: 'ADDRESS_NOT_FOUND',
+  ADDRESS_DELETE_RESTRICTED: 'ADDRESS_DELETE_RESTRICTED',
 
   // ── Product ──────────────────────────────────────────────
   PRODUCT_NOT_FOUND: 'PRODUCT_NOT_FOUND',

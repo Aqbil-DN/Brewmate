@@ -5,6 +5,7 @@ import { AppService } from './app.service.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { validate } from './config/env.validation.js';
 import { AuthModule } from './auth/auth.module.js';
+import { UsersModule } from './users/users.module.js';
 
 @Module({
   imports: [
@@ -20,8 +21,12 @@ import { AuthModule } from './auth/auth.module.js';
 
     // ── Authentication ───────────────────────────────────
     AuthModule,
+
+    // ── User Profile, Preferences & Addresses ────────────
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
