@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "711400058536",
+    "project_id": "brewmate-ai",
+    "storage_bucket": "brewmate-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711400058536:android:28a2c337bb43c412e39c9d",
+        "android_client_info": {
+          "package_name": "com.brewmate.ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711400058536-m3mhhki5to17a0jl4rh9b953hr37vjbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.brewmate.ai",
+            "certificate_hash": "32593d01f5adfb73a5b0106ec0e84b05cdd280c4"
+          }
+        },
+        {
+          "client_id": "711400058536-bhoulg51hhrd955h5ln21dkvdvaj4l02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0G3CZTXhHmaOuRkcVi0tMPGo6_7DFd3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711400058536-bhoulg51hhrd955h5ln21dkvdvaj4l02.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "711400058536-srb6o6df45fgh2raruk6qg03d7csqhcv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.brewmate.brewmateAi"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711400058536:android:6ef5c42845aaf61fe39c9d",
+        "android_client_info": {
+          "package_name": "com.brewmate.brewmate_ai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711400058536-bhoulg51hhrd955h5ln21dkvdvaj4l02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0G3CZTXhHmaOuRkcVi0tMPGo6_7DFd3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711400058536-bhoulg51hhrd955h5ln21dkvdvaj4l02.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "711400058536-srb6o6df45fgh2raruk6qg03d7csqhcv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.brewmate.brewmateAi"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"brewmate-ai","appId":"1:711400058536:android:6ef5c42845aaf61fe39c9d","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"brewmate-ai","configurations":{"android":"1:711400058536:android:6ef5c42845aaf61fe39c9d","ios":"1:711400058536:ios:5f229345f8c7db80e39c9d"}}}}}}
