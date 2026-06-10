@@ -27,7 +27,9 @@ async function bootstrap(): Promise<void> {
   });
 
   // ── Global Prefix ────────────────────────────────────────
-  app.setGlobalPrefix('api/v1');
+  const apiPrefix = configService.get<string>('API_PREFIX', '/api/v1');
+  app.setGlobalPrefix(apiPrefix);
+
 
   // ── Global Pipes ─────────────────────────────────────────
   app.useGlobalPipes(

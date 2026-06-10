@@ -36,6 +36,11 @@ class EnvironmentVariables {
   PORT: number = 3000;
 
   @IsString()
+  @IsOptional()
+  API_PREFIX: string = '/api/v1';
+
+
+  @IsString()
   @IsNotEmpty({ message: 'DATABASE_URL is required' })
   DATABASE_URL!: string;
 
