@@ -1,0 +1,276 @@
+
+<h2 class="sr-only">BrewMate AI — Entity Relationship Diagram showing all database tables and their relationships</h2>
+<style>
+#erd svg { width: 100%; }
+</style>
+<div id="erd" style="padding: 8px 0"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+    primaryColor: dark ? '#3C3489' : '#EEEDFE',
+    primaryBorderColor: dark ? '#AFA9EC' : '#534AB7',
+    primaryTextColor: dark ? '#c2c0b6' : '#26215C',
+    secondaryColor: dark ? '#085041' : '#E1F5EE',
+    secondaryBorderColor: dark ? '#5DCAA5' : '#0F6E56',
+    tertiaryColor: dark ? '#633806' : '#FAEEDA',
+    tertiaryBorderColor: dark ? '#EF9F27' : '#854F0B',
+  },
+});
+
+const diagram = `erDiagram
+  users {
+    uuid id PK
+    varchar email
+    varchar password_hash
+    varchar full_name
+    varchar phone_number
+    varchar avatar_url
+    enum auth_provider
+    boolean is_verified
+    boolean is_active
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  user_preferences {
+    uuid id PK
+    uuid user_id FK
+    text allergen_tags
+    enum default_order_type
+    varchar default_payment_method
+    boolean ai_notifications_enabled
+    timestamptz updated_at
+  }
+
+  addresses {
+    uuid id PK
+    uuid user_id FK
+    varchar label
+    text full_address
+    varchar city
+    decimal lat
+    decimal lng
+    boolean is_default
+  }
+
+  categories {
+    uuid id PK
+    varchar name
+    varchar slug
+    varchar icon_url
+    int display_order
+    boolean is_active
+  }
+
+  products {
+    uuid id PK
+    uuid category_id FK
+    varchar name
+    text description
+    decimal base_price
+    varchar image_url
+    enum status
+    boolean is_available
+    boolean is_featured
+    decimal cost_price
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  product_variants {
+    uuid id PK
+    uuid product_id FK
+    varchar name
+    decimal price_modifier
+    boolean is_default
+    boolean is_available
+  }
+
+  product_ai_attributes {
+    uuid id PK
+    uuid product_id FK
+    text need_tags
+    text flavor_tags
+    enum drink_type
+    enum budget_tier
+    int caffeine_level
+    int sweetness_level
+    int strength_level
+    text ai_description
+  }
+
+  tags {
+    uuid id PK
+    varchar name
+    enum tag_type
+    varchar color_hex
+  }
+
+  product_tags {
+    uuid product_id FK
+    uuid tag_id FK
+  }
+
+  carts {
+    uuid id PK
+    uuid user_id FK
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  cart_items {
+    uuid id PK
+    uuid cart_id FK
+    uuid product_id FK
+    uuid variant_id FK
+    int quantity
+    decimal unit_price
+    text special_instructions
+    timestamptz added_at
+  }
+
+  orders {
+    uuid id PK
+    uuid user_id FK
+    uuid address_id FK
+    varchar order_number
+    enum order_type
+    enum status
+    enum payment_status
+    varchar payment_method
+    varchar payment_reference
+    decimal subtotal
+    decimal discount_amount
+    decimal tax_amount
+    decimal total_amount
+    varchar promo_code
+    text special_notes
+    timestamptz placed_at
+    timestamptz completed_at
+    timestamptz updated_at
+  }
+
+  order_items {
+    uuid id PK
+    uuid order_id FK
+    uuid product_id FK
+    uuid variant_id FK
+    varchar product_name_snapshot
+    decimal unit_price_snapshot
+    int quantity
+    text special_instructions
+  }
+
+  promotions {
+    uuid id PK
+    varchar code
+    enum discount_type
+    decimal discount_value
+    decimal min_order_value
+    int max_uses
+    int current_uses
+    boolean is_active
+    timestamptz valid_from
+    timestamptz valid_until
+  }
+
+  loyalty_stamps {
+    uuid id PK
+    uuid user_id FK
+    uuid order_id FK
+    int stamps_earned
+    int stamps_balance
+    timestamptz earned_at
+  }
+
+  ai_quiz_sessions {
+    uuid id PK
+    uuid user_id FK
+    enum input_mode
+    varchar need_answer
+    varchar flavor_answer
+    varchar drink_type_answer
+    varchar budget_answer
+    text chat_transcript
+    int recommendations_shown
+    int recommendations_added_to_cart
+    boolean resulted_in_order
+    uuid resulting_order_id FK
+    timestamptz started_at
+    timestamptz completed_at
+  }
+
+  ai_recommendation_events {
+    uuid id PK
+    uuid session_id FK
+    uuid product_id FK
+    int rank_position
+    decimal match_score
+    boolean was_added_to_cart
+    boolean was_purchased
+    text ai_reason_text
+    timestamptz recommended_at
+  }
+
+  users ||--o{ user_preferences : "has"
+  users ||--o{ addresses : "has"
+  users ||--o{ carts : "owns"
+  users ||--o{ orders : "places"
+  users ||--o{ loyalty_stamps : "earns"
+  users ||--o{ ai_quiz_sessions : "initiates"
+  categories ||--o{ products : "contains"
+  products ||--o{ product_variants : "has"
+  products ||--|| product_ai_attributes : "described by"
+  products ||--o{ product_tags : "tagged with"
+  tags ||--o{ product_tags : "applied to"
+  carts ||--o{ cart_items : "contains"
+  products ||--o{ cart_items : "added to"
+  product_variants ||--o{ cart_items : "selected in"
+  orders ||--o{ order_items : "contains"
+  products ||--o{ order_items : "purchased in"
+  product_variants ||--o{ order_items : "selected in"
+  addresses ||--o{ orders : "delivers to"
+  loyalty_stamps ||--|| orders : "earned from"
+  ai_quiz_sessions ||--o{ ai_recommendation_events : "generates"
+  products ||--o{ ai_recommendation_events : "recommended in"
+  ai_quiz_sessions ||--o| orders : "leads to"
+`;
+
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+
+document.querySelectorAll('#erd svg .row-rect-odd path, #erd svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
