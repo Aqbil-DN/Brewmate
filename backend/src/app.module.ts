@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { validate } from './config/env.validation.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
+import { ProductsModule } from './products/products.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,9 @@ import { UsersModule } from './users/users.module.js';
 
     // ── User Profile, Preferences & Addresses ────────────
     UsersModule,
+
+    // ── Product Catalogue ────────────────────────────────
+    ProductsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
