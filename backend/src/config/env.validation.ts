@@ -52,6 +52,10 @@ class EnvironmentVariables {
   @IsOptional()
   JWT_EXPIRATION: string = '7d';
 
+  @IsString()
+  @IsOptional()
+  JWT_EXPIRES_IN: string = '7d';
+
   // ── Optional for early development ──────────────────────
   @IsString()
   @IsOptional()
