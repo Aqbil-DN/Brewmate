@@ -7,6 +7,7 @@ import { validate } from './config/env.validation.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsersModule } from './users/users.module.js';
 import { ProductsModule } from './products/products.module.js';
+import { CartModule } from './cart/cart.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,9 @@ import { ProductsModule } from './products/products.module.js';
 
     // ── Product Catalogue ────────────────────────────────
     ProductsModule,
+
+    // ── Cart ─────────────────────────────────────────────
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],
