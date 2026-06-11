@@ -1,15 +1,41 @@
-import { Controller, Post, Body, ForbiddenException, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Body, ForbiddenException, HttpCode, HttpStatus, Headers, UnauthorizedException, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { XenditService } from './xendit.service.js';
+import { XenditWebhookService } from './xendit-webhook.service.js';
 import { CreateTestPaymentDto } from './dto/create-test-payment.dto.js';
+import { XenditWebhookDto } from './dto/xendit-webhook.dto.js';
 import { randomUUID } from 'crypto';
 
 @Controller('payments')
 export class PaymentsController {
+  private readonly logger = new Logger(PaymentsController.name);
+
   constructor(
     private readonly xenditService: XenditService,
+    private readonly xenditWebhookService: XenditWebhookService,
     private readonly configService: ConfigService,
   ) {}
+
+  @Post('xendit/webhook')
+  async handleXenditWebhook(
+    @Headers('x-callback-token') callbackToken: string,
+    @Body() payload: XenditWebhookDto,
+  ) {
+    const expectedToken = process.env.XENDIT_WEBHOOK_TOKEN;
+
+    if (!expectedToken || callbackToken !== expectedToken) {
+      this.logger.warn('Unauthorized webhook request: invalid token');
+      throw new UnauthorizedException({
+        success: false,
+        error: {
+          code: 'WEBHOOK_UNAUTHORIZED',
+          message: 'Invalid webhook token.',
+        },
+      });
+    }
+
+    return this.xenditWebhookService.processWebhook(payload);
+  }
 
   @Post('dev/create-test-link')
   @HttpCode(HttpStatus.OK)
