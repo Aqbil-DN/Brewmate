@@ -19,7 +19,7 @@ export class PaymentsController {
   @Post('xendit/webhook')
   async handleXenditWebhook(
     @Headers('x-callback-token') callbackToken: string,
-    @Body() payload: XenditWebhookDto,
+    @Body() payload: any,
   ) {
     const expectedToken = process.env.XENDIT_WEBHOOK_TOKEN;
 
