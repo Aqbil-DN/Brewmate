@@ -14,6 +14,12 @@ import { CreateOrderDto } from './dto/create-order.dto.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 
+interface JwtUser {
+  id: string;
+  email: string;
+  authProvider: string;
+}
+
 @Controller('orders')
 @UseGuards(JwtAuthGuard)
 export class OrdersController {
@@ -21,15 +27,15 @@ export class OrdersController {
 
   @Post()
   async createOrder(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser() user: JwtUser,
     @Body() createOrderDto: CreateOrderDto,
   ) {
-    return this.ordersService.createOrder(userId, createOrderDto);
+    return this.ordersService.createOrder(user.id, createOrderDto);
   }
 
   @Get()
   async getUserOrders(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser() user: JwtUser,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
     @Query('status') status?: string,
@@ -42,7 +48,7 @@ export class OrdersController {
     const finalLimit = Math.min(limitNumber, 50);
 
     return this.ordersService.getUserOrders(
-      userId,
+      user.id,
       pageNumber,
       finalLimit,
       status,
@@ -52,17 +58,17 @@ export class OrdersController {
 
   @Get(':id')
   async getOrderDetail(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser() user: JwtUser,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.ordersService.getOrderDetail(userId, id);
+    return this.ordersService.getOrderDetail(user.id, id);
   }
 
   @Post(':id/reorder')
   async reorder(
-    @CurrentUser('userId') userId: string,
+    @CurrentUser() user: JwtUser,
     @Param('id', ParseUUIDPipe) id: string,
   ) {
-    return this.ordersService.reorder(userId, id);
+    return this.ordersService.reorder(user.id, id);
   }
 }
