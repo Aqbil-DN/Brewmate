@@ -10,6 +10,7 @@ import { ProductsModule } from './products/products.module.js';
 import { CartModule } from './cart/cart.module.js';
 import { PromotionsModule } from './promotions/promotions.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
+import { OrdersModule } from './orders/orders.module.js';
 
 @Module({
   imports: [
@@ -40,6 +41,9 @@ import { PaymentsModule } from './payments/payments.module.js';
 
     // ── Payments ─────────────────────────────────────────
     PaymentsModule,
+
+    // ── Orders ───────────────────────────────────────────
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
