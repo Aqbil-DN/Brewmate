@@ -13,6 +13,7 @@ import { PaymentsModule } from './payments/payments.module.js';
 import { OrdersModule } from './orders/orders.module.js';
 import { LoyaltyModule } from './loyalty/loyalty.module.js';
 import { CoffeeMatchModule } from './coffee-match/coffee-match.module.js';
+import { AiModule } from './ai/ai.module.js';
 
 @Module({
   imports: [
@@ -52,6 +53,9 @@ import { CoffeeMatchModule } from './coffee-match/coffee-match.module.js';
 
     // ── Coffee Match ─────────────────────────────────────
     CoffeeMatchModule,
+
+    // ── AI Services ──────────────────────────────────────
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
