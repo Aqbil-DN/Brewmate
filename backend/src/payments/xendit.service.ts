@@ -33,16 +33,26 @@ export class XenditService {
     return `Basic ${base64Credentials}`;
   }
 
-  private normalizeAmountToIntegerRupiah(amount: number): number {
-    return Math.round(amount);
+  private normalizeAmountToIntegerRupiah(amount: number | string | any): number {
+    return Math.round(Number(amount));
   }
 
   private mapXenditResponseToPaymentResult(response: any): CreateXenditPaymentResult {
+    const paymentUrl = response.invoice_url || response.payment_url || response.checkout_url;
+
+    if (!paymentUrl) {
+      this.logger.error(`No payment URL found in Xendit response. Response: ${JSON.stringify(response)}`);
+      throw new InternalServerErrorException({
+        code: AppErrorCodes.PAYMENT_GATEWAY_ERROR,
+        message: 'Unable to retrieve payment link from gateway.',
+      });
+    }
+
     return {
       provider: 'xendit',
       externalId: response.external_id,
       paymentReference: response.id,
-      paymentUrl: response.invoice_url,
+      paymentUrl,
       expiresAt: response.expiry_date || null,
       // Store raw response safely (excluding keys if any)
       rawResponse: {
