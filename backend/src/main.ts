@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
 import { GlobalHttpExceptionFilter } from './common/filters/http-exception.filter.js';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor.js';
@@ -48,6 +49,17 @@ async function bootstrap(): Promise<void> {
 
   // ── Global Interceptors ──────────────────────────────────
   app.useGlobalInterceptors(new ResponseInterceptor());
+
+  // ── Swagger / OpenAPI ────────────────────────────────────
+  const config = new DocumentBuilder()
+    .setTitle('BrewMate AI API')
+    .setDescription('REST API for BrewMate AI mobile coffee ordering app with Quick Order, Coffee Match, Xendit payment, loyalty, and Groq-powered chat.')
+    .setVersion('1.0')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'bearer')
+    .build();
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api/docs', app, document);
 
   // ── Start ────────────────────────────────────────────────
   await app.listen(port);

@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UsersService } from './users.service.js';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
@@ -28,6 +29,8 @@ interface JwtUser {
   authProvider: string;
 }
 
+@ApiTags('Users')
+@ApiBearerAuth('bearer')
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UsersController {
@@ -36,12 +39,16 @@ export class UsersController {
   // ── Profile ────────────────────────────────────────────────────────────────
 
   /** GET /api/v1/users/me */
+  @ApiOperation({ summary: 'Get current user profile' })
+  @ApiResponse({ status: 200, description: 'Profile returned successfully.' })
   @Get('me')
   getProfile(@CurrentUser() user: JwtUser) {
     return this.usersService.getProfile(user.id);
   }
 
   /** PATCH /api/v1/users/me */
+  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiResponse({ status: 200, description: 'Profile updated successfully.' })
   @Patch('me')
   updateProfile(@CurrentUser() user: JwtUser, @Body() dto: UpdateProfileDto) {
     return this.usersService.updateProfile(user.id, dto);
