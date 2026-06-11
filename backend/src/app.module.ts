@@ -11,6 +11,7 @@ import { CartModule } from './cart/cart.module.js';
 import { PromotionsModule } from './promotions/promotions.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
 import { OrdersModule } from './orders/orders.module.js';
+import { LoyaltyModule } from './loyalty/loyalty.module.js';
 
 @Module({
   imports: [
@@ -44,6 +45,9 @@ import { OrdersModule } from './orders/orders.module.js';
 
     // ── Orders ───────────────────────────────────────────
     OrdersModule,
+
+    // ── Loyalty ──────────────────────────────────────────
+    LoyaltyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

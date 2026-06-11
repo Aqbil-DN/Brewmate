@@ -1,12 +1,16 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { PaymentStatus, OrderStatus, Prisma } from '@prisma/client';
+import { LoyaltyService } from '../loyalty/loyalty.service.js';
 
 @Injectable()
 export class XenditWebhookService {
   private readonly logger = new Logger(XenditWebhookService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly loyaltyService: LoyaltyService,
+  ) {}
 
   /**
    * Main entry point for webhook processing.
@@ -164,27 +168,7 @@ export class XenditWebhookService {
       }
 
       // Loyalty Stamps
-      const existingStamp = await tx.loyaltyStamp.findFirst({
-        where: { orderId: order.id },
-      });
-
-      if (!existingStamp) {
-        // Get user's latest balance
-        const latestStamp = await tx.loyaltyStamp.findFirst({
-          where: { userId: order.userId },
-          orderBy: { earnedAt: 'desc' },
-        });
-        const prevBalance = latestStamp ? latestStamp.stampsBalance : 0;
-
-        await tx.loyaltyStamp.create({
-          data: {
-            userId: order.userId,
-            orderId: order.id,
-            stampsEarned: 1,
-            stampsBalance: prevBalance + 1,
-          },
-        });
-      }
+      await this.loyaltyService.awardStampForPaidOrder(order.id, tx);
 
       // AI Quiz Sessions logic
       const aiSession = await tx.aiQuizSession.findFirst({
