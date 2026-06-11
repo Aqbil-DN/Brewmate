@@ -12,6 +12,7 @@ import { PromotionsModule } from './promotions/promotions.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
 import { OrdersModule } from './orders/orders.module.js';
 import { LoyaltyModule } from './loyalty/loyalty.module.js';
+import { CoffeeMatchModule } from './coffee-match/coffee-match.module.js';
 
 @Module({
   imports: [
@@ -48,6 +49,9 @@ import { LoyaltyModule } from './loyalty/loyalty.module.js';
 
     // ── Loyalty ──────────────────────────────────────────
     LoyaltyModule,
+
+    // ── Coffee Match ─────────────────────────────────────
+    CoffeeMatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
