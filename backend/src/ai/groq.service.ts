@@ -105,7 +105,10 @@ export class GroqService {
     // 4. Chat History
     if (input.chatHistory && input.chatHistory.length > 0) {
       // Limit history to last 10 messages to save tokens
-      const recentHistory = input.chatHistory.slice(-10);
+      const recentHistory = input.chatHistory.slice(-10).map(msg => ({
+        role: msg.role,
+        content: msg.content,
+      }));
       messages.push(...recentHistory);
     }
 
