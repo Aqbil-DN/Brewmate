@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module.js';
 import { ProductsModule } from './products/products.module.js';
 import { CartModule } from './cart/cart.module.js';
 import { PromotionsModule } from './promotions/promotions.module.js';
+import { PaymentsModule } from './payments/payments.module.js';
 
 @Module({
   imports: [
@@ -36,6 +37,9 @@ import { PromotionsModule } from './promotions/promotions.module.js';
 
     // ── Promotions ───────────────────────────────────────
     PromotionsModule,
+
+    // ── Payments ─────────────────────────────────────────
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

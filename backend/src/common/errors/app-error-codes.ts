@@ -64,6 +64,7 @@ export const AppErrorCodes = {
   // ── Payment ──────────────────────────────────────────────
   PAYMENT_FAILED: 'PAYMENT_FAILED',
   PAYMENT_WEBHOOK_INVALID: 'PAYMENT_WEBHOOK_INVALID',
+  PAYMENT_GATEWAY_ERROR: 'PAYMENT_GATEWAY_ERROR',
 
   // ── AI ───────────────────────────────────────────────────
   AI_SERVICE_UNAVAILABLE: 'AI_SERVICE_UNAVAILABLE',
