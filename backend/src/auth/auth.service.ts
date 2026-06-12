@@ -141,7 +141,10 @@ export class AuthService {
       });
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.passwordHash,
+    );
     if (!isPasswordValid) {
       throw new BadRequestException({
         code: AppErrorCodes.AUTH_INVALID_CREDENTIALS,

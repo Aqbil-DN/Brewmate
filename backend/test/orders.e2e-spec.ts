@@ -81,7 +81,7 @@ describe('OrdersModule (e2e)', () => {
     });
     expect(orderInDb).toBeDefined();
     expect(orderInDb?.orderItems.length).toBe(1);
-    expect(orderInDb?.promoCodeId).toBe(testData.promotion.id);
+    expect(orderInDb?.promoCode).toBe(testData.promotion.code);
 
     // 4. Cart should NOT be empty yet (wait for paid webhook)
     const cartRes = await request(app.getHttpServer())

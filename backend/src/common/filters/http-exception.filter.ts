@@ -43,13 +43,10 @@ export class GlobalHttpExceptionFilter implements ExceptionFilter {
       // Handle validation pipe errors (class-validator)
       if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
         const res = exceptionResponse as Record<string, unknown>;
-        code =
-          (res['code'] as string) ||
-          this.mapHttpStatusToErrorCode(status);
-        message =
-          Array.isArray(res['message'])
-            ? (res['message'] as string[]).join('; ')
-            : (res['message'] as string) || exception.message;
+        code = (res['code'] as string) || this.mapHttpStatusToErrorCode(status);
+        message = Array.isArray(res['message'])
+          ? (res['message'] as string[]).join('; ')
+          : (res['message'] as string) || exception.message;
       } else {
         code = this.mapHttpStatusToErrorCode(status);
         message =

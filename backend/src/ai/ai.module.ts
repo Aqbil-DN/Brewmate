@@ -10,4 +10,3 @@ import { AiController } from './ai.controller.js';
   exports: [GroqService],
 })
 export class AiModule {}
-

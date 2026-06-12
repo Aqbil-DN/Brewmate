@@ -43,7 +43,7 @@ export class OrdersController {
   ) {
     const pageNumber = page ? parseInt(page, 10) : 1;
     const limitNumber = limit ? parseInt(limit, 10) : 20;
-    
+
     // Hard cap limit to 50
     const finalLimit = Math.min(limitNumber, 50);
 

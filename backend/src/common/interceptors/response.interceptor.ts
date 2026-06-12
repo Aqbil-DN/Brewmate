@@ -28,9 +28,10 @@ export interface ApiSuccessResponse<T> {
  * Error responses are handled separately by GlobalHttpExceptionFilter.
  */
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ApiSuccessResponse<T>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ApiSuccessResponse<T>
+> {
   intercept(
     _context: ExecutionContext,
     next: CallHandler<T>,

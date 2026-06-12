@@ -1,4 +1,8 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AppErrorCodes } from '../common/errors/app-error-codes.js';
 import { Prisma } from '@prisma/client';
@@ -26,7 +30,9 @@ export class PromotionsService {
    * Internal method used by both the public endpoint and the OrdersModule later.
    * Does NOT increment usage. Usage is incremented in webhook on payment success.
    */
-  async validateAndCalculatePromo(input: ValidatePromoInput): Promise<PromoValidationResult> {
+  async validateAndCalculatePromo(
+    input: ValidatePromoInput,
+  ): Promise<PromoValidationResult> {
     const code = input.code.trim().toUpperCase();
     const cartSubtotal = Number(input.cartSubtotal.toString());
 
@@ -63,7 +69,10 @@ export class PromotionsService {
       });
     }
 
-    if (promo.minOrderValue && cartSubtotal < Number(promo.minOrderValue.toString())) {
+    if (
+      promo.minOrderValue &&
+      cartSubtotal < Number(promo.minOrderValue.toString())
+    ) {
       throw new BadRequestException({
         code: AppErrorCodes.PROMO_MIN_ORDER_NOT_MET,
         message: 'Minimum order value has not been reached.',
@@ -88,7 +97,8 @@ export class PromotionsService {
     } else if (promo.discountType === 'free_item') {
       // For MVP, free item logic will be handled manually or in checkout, 0 cash discount.
       discountAmount = 0;
-      message = 'Free snack promo is valid. Free item handling will be applied at checkout.';
+      message =
+        'Free snack promo is valid. Free item handling will be applied at checkout.';
     }
 
     // Ensure discount doesn't exceed cart subtotal

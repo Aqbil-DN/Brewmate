@@ -29,6 +29,10 @@ export class LoyaltyController {
     let limitNumber = limit ? parseInt(limit, 10) : 20;
     limitNumber = Math.min(limitNumber, 50); // Hard cap limit
 
-    return this.loyaltyService.getLoyaltyHistory(user.id, pageNumber, limitNumber);
+    return this.loyaltyService.getLoyaltyHistory(
+      user.id,
+      pageNumber,
+      limitNumber,
+    );
   }
 }

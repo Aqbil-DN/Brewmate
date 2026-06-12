@@ -29,7 +29,7 @@ export class AiController {
         price: 28000,
         category: 'Coffee',
         aiDescription: 'Bold, cold, and refreshing. Zero sugar.',
-      }
+      },
     ];
 
     const result = await this.groqService.generateBaristaReply({

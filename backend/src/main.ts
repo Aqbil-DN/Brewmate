@@ -31,7 +31,6 @@ async function bootstrap(): Promise<void> {
   const apiPrefix = configService.get<string>('API_PREFIX', '/api/v1');
   app.setGlobalPrefix(apiPrefix);
 
-
   // ── Global Pipes ─────────────────────────────────────────
   app.useGlobalPipes(
     new ValidationPipe({
@@ -53,11 +52,16 @@ async function bootstrap(): Promise<void> {
   // ── Swagger / OpenAPI ────────────────────────────────────
   const config = new DocumentBuilder()
     .setTitle('BrewMate AI API')
-    .setDescription('REST API for BrewMate AI mobile coffee ordering app with Quick Order, Coffee Match, Xendit payment, loyalty, and Groq-powered chat.')
+    .setDescription(
+      'REST API for BrewMate AI mobile coffee ordering app with Quick Order, Coffee Match, Xendit payment, loyalty, and Groq-powered chat.',
+    )
     .setVersion('1.0')
-    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }, 'bearer')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'bearer',
+    )
     .build();
-  
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
@@ -66,7 +70,9 @@ async function bootstrap(): Promise<void> {
 
   logger.log(`🚀 BrewMate AI Backend running on http://localhost:${port}`);
   logger.log(`📡 API available at http://localhost:${port}/api/v1`);
-  logger.log(`🌍 Environment: ${configService.get<string>('NODE_ENV', 'development')}`);
+  logger.log(
+    `🌍 Environment: ${configService.get<string>('NODE_ENV', 'development')}`,
+  );
 }
 
 bootstrap();

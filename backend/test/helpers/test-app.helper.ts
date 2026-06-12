@@ -4,6 +4,7 @@ import { AppModule } from '../../src/app.module.js';
 import { PrismaService } from '../../src/prisma/prisma.service.js';
 import { XenditService } from '../../src/payments/xendit.service.js';
 import { GroqService } from '../../src/ai/groq.service.js';
+import { FirebaseAdminService } from '../../src/auth/firebase-admin.service.js';
 import { GlobalHttpExceptionFilter } from '../../src/common/filters/http-exception.filter.js';
 import { ResponseInterceptor } from '../../src/common/interceptors/response.interceptor.js';
 
@@ -28,6 +29,11 @@ export const mockGroqService = {
   })),
 };
 
+export const mockFirebaseAdminService = {
+  onModuleInit: jest.fn(),
+  verifyIdToken: jest.fn().mockRejectedValue(new Error('Firebase not used in tests')),
+};
+
 export async function createTestApp(): Promise<{
   app: INestApplication;
   moduleRef: TestingModule;
@@ -39,6 +45,8 @@ export async function createTestApp(): Promise<{
     .useValue(mockXenditService)
     .overrideProvider(GroqService)
     .useValue(mockGroqService)
+    .overrideProvider(FirebaseAdminService)
+    .useValue(mockFirebaseAdminService)
     .compile();
 
   const app = moduleRef.createNestApplication();
@@ -63,21 +71,35 @@ export async function createTestApp(): Promise<{
 }
 
 export async function cleanDatabase(prisma: PrismaService) {
-  // Safe generic way to truncate all public tables in PostgreSQL
-  // Exclude Prisma migrations table
-  const tablenames = await prisma.$queryRaw<
-    Array<{ tablename: string }>
-  >`SELECT tablename FROM pg_tables WHERE schemaname='public' AND tablename != '_prisma_migrations';`;
+  if (process.env.NODE_ENV !== 'test') {
+    throw new Error('cleanDatabase can only be run in test environment');
+  }
 
-  for (const { tablename } of tablenames) {
-    if (tablename !== '_prisma_migrations') {
-      try {
-        await prisma.$executeRawUnsafe(
-          `TRUNCATE TABLE "${tablename}" CASCADE;`,
-        );
-      } catch (error) {
-        console.error(`Error truncating ${tablename}:`, error);
-      }
+  // Clean child tables first to avoid foreign key constraint errors
+  const tables = [
+    'ai_recommendation_events',
+    'ai_quiz_sessions',
+    'loyalty_stamps',
+    'order_items',
+    'orders',
+    'cart_items',
+    'carts',
+    'product_tags',
+    'product_ai_attributes',
+    'product_variants',
+    'products',
+    'tags',
+    'categories',
+    'user_preferences',
+    'addresses',
+    'users'
+  ];
+
+  for (const table of tables) {
+    try {
+      await prisma.$executeRawUnsafe(`DELETE FROM "${table}";`);
+    } catch (error) {
+      console.error(`Error cleaning table ${table}:`, error);
     }
   }
 }

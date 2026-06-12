@@ -15,7 +15,7 @@ export class XenditWebhookDto {
   @IsOptional()
   @IsString()
   external_id?: string;
-  
+
   @IsOptional()
   @IsString()
   event?: string;

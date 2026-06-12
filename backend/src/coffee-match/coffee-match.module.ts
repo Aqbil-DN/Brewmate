@@ -10,6 +10,10 @@ import { AiModule } from '../ai/ai.module.js';
 @Module({
   imports: [PrismaModule, CartModule, AiModule],
   controllers: [CoffeeMatchController],
-  providers: [CoffeeMatchService, RecommendationScoringService, ChatIntentParserService],
+  providers: [
+    CoffeeMatchService,
+    RecommendationScoringService,
+    ChatIntentParserService,
+  ],
 })
 export class CoffeeMatchModule {}

@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 
-// Load .env
-dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+// Load .env.test
+dotenv.config({ path: path.resolve(process.cwd(), '.env.test') });
 
-// Force DATABASE_URL to use DATABASE_URL_TEST if available
+// Fallback to DATABASE_URL_TEST if DATABASE_URL is somehow missing or we want to be safe
 if (process.env.DATABASE_URL_TEST) {
   process.env.DATABASE_URL = process.env.DATABASE_URL_TEST;
 }

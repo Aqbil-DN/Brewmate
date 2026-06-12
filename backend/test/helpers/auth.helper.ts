@@ -7,6 +7,7 @@ export async function createTestUser(
 ) {
   const email = userDetails.email || `test_${Date.now()}@example.com`;
   const password = userDetails.password || 'Password123!';
+  const uniquePhone = '+628' + Math.floor(Math.random() * 1000000000).toString().padStart(9, '0');
 
   const response = await request(app.getHttpServer())
     .post('/api/v1/auth/register')
@@ -14,7 +15,7 @@ export async function createTestUser(
       email,
       password,
       fullName: userDetails.fullName || 'Test User',
-      phoneNumber: userDetails.phoneNumber || '+6281234567890',
+      phoneNumber: userDetails.phoneNumber || uniquePhone,
     });
 
   return { email, password, response: response.body };

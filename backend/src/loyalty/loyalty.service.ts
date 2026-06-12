@@ -19,12 +19,13 @@ export class LoyaltyService {
     });
 
     const balance = latestStamp ? latestStamp.stampsBalance : 0;
-    
+
     // threshold = 10
     // stampsToNextReward = threshold - (balance % threshold)
     // If balance % threshold === 0 and balance > 0, reward is unlocked!
-    
-    let stampsToNextReward = this.REWARD_THRESHOLD - (balance % this.REWARD_THRESHOLD);
+
+    let stampsToNextReward =
+      this.REWARD_THRESHOLD - (balance % this.REWARD_THRESHOLD);
     let rewardUnlocked = false;
 
     if (balance > 0 && balance % this.REWARD_THRESHOLD === 0) {
@@ -98,7 +99,10 @@ export class LoyaltyService {
   /**
    * Internal method called by XenditWebhookService when payment succeeds.
    */
-  async awardStampForPaidOrder(orderId: string, txClient?: Prisma.TransactionClient) {
+  async awardStampForPaidOrder(
+    orderId: string,
+    txClient?: Prisma.TransactionClient,
+  ) {
     const prisma = txClient || this.prisma;
 
     // Load order
@@ -122,7 +126,9 @@ export class LoyaltyService {
     });
 
     if (existingStamp) {
-      this.logger.log(`Loyalty stamp already awarded for order ${orderId}. Skipping.`);
+      this.logger.log(
+        `Loyalty stamp already awarded for order ${orderId}. Skipping.`,
+      );
       return existingStamp;
     }
 
@@ -145,7 +151,9 @@ export class LoyaltyService {
       },
     });
 
-    this.logger.log(`Awarded 1 stamp to user ${order.userId} for order ${orderId}. New balance: ${newBalance}`);
+    this.logger.log(
+      `Awarded 1 stamp to user ${order.userId} for order ${orderId}. New balance: ${newBalance}`,
+    );
     return newStamp;
   }
 }

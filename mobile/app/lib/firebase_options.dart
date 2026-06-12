@@ -66,8 +66,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '711400058536',
     projectId: 'brewmate-ai',
     storageBucket: 'brewmate-ai.firebasestorage.app',
-    androidClientId: '711400058536-m3mhhki5to17a0jl4rh9b953hr37vjbq.apps.googleusercontent.com',
-    iosClientId: '711400058536-srb6o6df45fgh2raruk6qg03d7csqhcv.apps.googleusercontent.com',
+    androidClientId:
+        '711400058536-m3mhhki5to17a0jl4rh9b953hr37vjbq.apps.googleusercontent.com',
+    iosClientId:
+        '711400058536-srb6o6df45fgh2raruk6qg03d7csqhcv.apps.googleusercontent.com',
     iosBundleId: 'com.brewmate.brewmateAi',
   );
 }

@@ -1,7 +1,14 @@
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios, { AxiosInstance } from 'axios';
-import { CreateXenditPaymentInput, CreateXenditPaymentResult } from './payment.types.js';
+import {
+  CreateXenditPaymentInput,
+  CreateXenditPaymentResult,
+} from './payment.types.js';
 import { AppErrorCodes } from '../common/errors/app-error-codes.js';
 
 @Injectable()
@@ -10,8 +17,11 @@ export class XenditService {
   private readonly axiosClient: AxiosInstance;
 
   constructor(private readonly configService: ConfigService) {
-    const baseURL = this.configService.get<string>('XENDIT_BASE_URL', 'https://api.xendit.co');
-    
+    const baseURL = this.configService.get<string>(
+      'XENDIT_BASE_URL',
+      'https://api.xendit.co',
+    );
+
     this.axiosClient = axios.create({
       baseURL,
       timeout: 15000,
@@ -25,7 +35,9 @@ export class XenditService {
   private buildBasicAuthHeader(): string {
     const secretKey = this.configService.get<string>('XENDIT_SECRET_KEY');
     if (!secretKey) {
-      this.logger.error('XENDIT_SECRET_KEY is missing from environment variables.');
+      this.logger.error(
+        'XENDIT_SECRET_KEY is missing from environment variables.',
+      );
       throw new InternalServerErrorException('Payment gateway misconfigured.');
     }
     // Xendit Basic Auth uses secret_key + ":"
@@ -33,15 +45,22 @@ export class XenditService {
     return `Basic ${base64Credentials}`;
   }
 
-  private normalizeAmountToIntegerRupiah(amount: number | string | any): number {
+  private normalizeAmountToIntegerRupiah(
+    amount: number | string | any,
+  ): number {
     return Math.round(Number(amount));
   }
 
-  private mapXenditResponseToPaymentResult(response: any): CreateXenditPaymentResult {
-    const paymentUrl = response.invoice_url || response.payment_url || response.checkout_url;
+  private mapXenditResponseToPaymentResult(
+    response: any,
+  ): CreateXenditPaymentResult {
+    const paymentUrl =
+      response.invoice_url || response.payment_url || response.checkout_url;
 
     if (!paymentUrl) {
-      this.logger.error(`No payment URL found in Xendit response. Response: ${JSON.stringify(response)}`);
+      this.logger.error(
+        `No payment URL found in Xendit response. Response: ${JSON.stringify(response)}`,
+      );
       throw new InternalServerErrorException({
         code: AppErrorCodes.PAYMENT_GATEWAY_ERROR,
         message: 'Unable to retrieve payment link from gateway.',
@@ -67,10 +86,16 @@ export class XenditService {
     input: CreateXenditPaymentInput,
   ): Promise<CreateXenditPaymentResult> {
     try {
-      this.logger.log(`Creating Xendit invoice for order: ${input.orderNumber}, Amount: ${input.amount}`);
+      this.logger.log(
+        `Creating Xendit invoice for order: ${input.orderNumber}, Amount: ${input.amount}`,
+      );
 
-      const successRedirectUrl = this.configService.get<string>('XENDIT_SUCCESS_REDIRECT_URL');
-      const failureRedirectUrl = this.configService.get<string>('XENDIT_FAILURE_REDIRECT_URL');
+      const successRedirectUrl = this.configService.get<string>(
+        'XENDIT_SUCCESS_REDIRECT_URL',
+      );
+      const failureRedirectUrl = this.configService.get<string>(
+        'XENDIT_FAILURE_REDIRECT_URL',
+      );
 
       const payload = {
         external_id: input.orderNumber, // Using orderNumber as the external ID
@@ -95,15 +120,21 @@ export class XenditService {
       // Xendit V2 Invoice API endpoint
       const response = await this.axiosClient.post('/v2/invoices', payload);
 
-      this.logger.log(`Successfully created Xendit invoice for order: ${input.orderNumber}. Ref: ${response.data.id}`);
+      this.logger.log(
+        `Successfully created Xendit invoice for order: ${input.orderNumber}. Ref: ${response.data.id}`,
+      );
 
       return this.mapXenditResponseToPaymentResult(response.data);
     } catch (error: any) {
-      this.logger.error(`Failed to create Xendit invoice for order: ${input.orderNumber}`);
-      
+      this.logger.error(
+        `Failed to create Xendit invoice for order: ${input.orderNumber}`,
+      );
+
       if (error.response) {
         // Safe logging without exposing secret keys from headers
-        this.logger.error(`Xendit API Error: Status ${error.response.status}, Data: ${JSON.stringify(error.response.data)}`);
+        this.logger.error(
+          `Xendit API Error: Status ${error.response.status}, Data: ${JSON.stringify(error.response.data)}`,
+        );
       } else {
         this.logger.error(`Xendit Request Error: ${error.message}`);
       }

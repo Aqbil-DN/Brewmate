@@ -1,7 +1,14 @@
-import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
-import { GenerateBaristaReplyInput, GenerateBaristaReplyResult } from './ai.types.js';
+import {
+  GenerateBaristaReplyInput,
+  GenerateBaristaReplyResult,
+} from './ai.types.js';
 import { AppErrorCodes } from '../common/errors/app-error-codes.js';
 
 @Injectable()
@@ -10,10 +17,15 @@ export class GroqService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  async generateBaristaReply(input: GenerateBaristaReplyInput): Promise<GenerateBaristaReplyResult> {
+  async generateBaristaReply(
+    input: GenerateBaristaReplyInput,
+  ): Promise<GenerateBaristaReplyResult> {
     const apiKey = this.configService.get<string>('GROQ_API_KEY');
-    const baseUrl = this.configService.get<string>('GROQ_BASE_URL') || 'https://api.groq.com/openai/v1';
-    const model = this.configService.get<string>('GROQ_MODEL') || 'llama-3.3-70b-versatile';
+    const baseUrl =
+      this.configService.get<string>('GROQ_BASE_URL') ||
+      'https://api.groq.com/openai/v1';
+    const model =
+      this.configService.get<string>('GROQ_MODEL') || 'llama-3.3-70b-versatile';
     const lang = input.language || 'id';
 
     if (!apiKey) {
@@ -41,7 +53,7 @@ export class GroqService {
             'Content-Type': 'application/json',
           },
           timeout: 10000, // 10 seconds timeout
-        }
+        },
       );
 
       const content = this.extractAssistantContent(response.data);
@@ -62,11 +74,15 @@ export class GroqService {
         provider: 'groq',
         model,
         fallbackUsed: false,
-        rawResponse: process.env.NODE_ENV !== 'production' ? response.data : undefined,
+        rawResponse:
+          process.env.NODE_ENV !== 'production' ? response.data : undefined,
       };
     } catch (error: any) {
-      this.logger.error(`Groq API request failed: ${error.message}`, error.stack);
-      
+      this.logger.error(
+        `Groq API request failed: ${error.message}`,
+        error.stack,
+      );
+
       return {
         content: this.getFallbackMessage(lang),
         provider: 'groq',
@@ -98,14 +114,16 @@ export class GroqService {
     if (input.recommendedProducts && input.recommendedProducts.length > 0) {
       messages.push({
         role: 'system',
-        content: this.buildRecommendedProductsMessage(input.recommendedProducts),
+        content: this.buildRecommendedProductsMessage(
+          input.recommendedProducts,
+        ),
       });
     }
 
     // 4. Chat History
     if (input.chatHistory && input.chatHistory.length > 0) {
       // Limit history to last 10 messages to save tokens
-      const recentHistory = input.chatHistory.slice(-10).map(msg => ({
+      const recentHistory = input.chatHistory.slice(-10).map((msg) => ({
         role: msg.role,
         content: msg.content,
       }));
@@ -148,17 +166,20 @@ export class GroqService {
   }
 
   private buildMenuContextMessage(menuContext: any[]): string {
-    const compactMenu = menuContext.map(item => 
-      `- ${item.name} (Rp ${item.price}) [${item.category}]`
-    ).join('\n');
-    
+    const compactMenu = menuContext
+      .map((item) => `- ${item.name} (Rp ${item.price}) [${item.category}]`)
+      .join('\n');
+
     return `Available Menu Context:\n${compactMenu}\nOnly recommend from this menu.`;
   }
 
   private buildRecommendedProductsMessage(recommendedProducts: any[]): string {
-    const compactRecs = recommendedProducts.map(item => 
-      `- ${item.name} (Rp ${item.price}, Score: ${item.matchScore}) Reason: ${item.aiReasonText || ''}`
-    ).join('\n');
+    const compactRecs = recommendedProducts
+      .map(
+        (item) =>
+          `- ${item.name} (Rp ${item.price}, Score: ${item.matchScore}) Reason: ${item.aiReasonText || ''}`,
+      )
+      .join('\n');
 
     return `The system has algorithmically recommended these products for the user:\n${compactRecs}\nPlease focus on explaining why these are good choices for them.`;
   }
@@ -175,6 +196,6 @@ export class GroqService {
     if (lang === 'en') {
       return "I'm a little busy right now, but I can still help you choose from our best recommendations.";
     }
-    return "Aku lagi sedikit sibuk, tapi aku tetap bisa bantu pilihkan menu dari rekomendasi terbaik kami.";
+    return 'Aku lagi sedikit sibuk, tapi aku tetap bisa bantu pilihkan menu dari rekomendasi terbaik kami.';
   }
 }

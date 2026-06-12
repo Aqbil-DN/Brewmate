@@ -176,14 +176,8 @@ export class UsersService {
           label: dto.label,
           fullAddress: dto.fullAddress,
           city: dto.city,
-          lat:
-            dto.lat !== undefined
-              ? new Prisma.Decimal(dto.lat)
-              : null,
-          lng:
-            dto.lng !== undefined
-              ? new Prisma.Decimal(dto.lng)
-              : null,
+          lat: dto.lat !== undefined ? new Prisma.Decimal(dto.lat) : null,
+          lng: dto.lng !== undefined ? new Prisma.Decimal(dto.lng) : null,
           isDefault: makeDefault,
         },
       });

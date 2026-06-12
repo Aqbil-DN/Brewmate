@@ -54,8 +54,9 @@ class _LoginTestPageState extends State<LoginTestPage> {
           idToken: googleAuth.idToken,
         );
 
-        final userCredential =
-            await FirebaseAuth.instance.signInWithCredential(credential);
+        final userCredential = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
         user = userCredential.user;
       }
 
@@ -92,9 +93,7 @@ class _LoginTestPageState extends State<LoginTestPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('BrewMate Google Login Test'),
-      ),
+      appBar: AppBar(title: const Text('BrewMate Google Login Test')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: ListView(
@@ -104,17 +103,11 @@ class _LoginTestPageState extends State<LoginTestPage> {
               child: Text(loading ? 'Loading...' : 'Continue with Google'),
             ),
             const SizedBox(height: 12),
-            ElevatedButton(
-              onPressed: signOut,
-              child: const Text('Sign Out'),
-            ),
+            ElevatedButton(onPressed: signOut, child: const Text('Sign Out')),
             const SizedBox(height: 24),
             if (email != null) Text('Email: $email'),
             if (error != null)
-              Text(
-                'Error: $error',
-                style: const TextStyle(color: Colors.red),
-              ),
+              Text('Error: $error', style: const TextStyle(color: Colors.red)),
             const SizedBox(height: 24),
             if (idToken != null) ...[
               const Text('Firebase ID Token:'),

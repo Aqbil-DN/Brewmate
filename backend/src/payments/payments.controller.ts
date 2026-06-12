@@ -1,4 +1,14 @@
-import { Controller, Post, Body, ForbiddenException, HttpCode, HttpStatus, Headers, UnauthorizedException, Logger } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ForbiddenException,
+  HttpCode,
+  HttpStatus,
+  Headers,
+  UnauthorizedException,
+  Logger,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { XenditService } from './xendit.service.js';
 import { XenditWebhookService } from './xendit-webhook.service.js';
@@ -42,7 +52,9 @@ export class PaymentsController {
   async createTestLink(@Body() dto: CreateTestPaymentDto) {
     const env = this.configService.get<string>('NODE_ENV', 'development');
     if (env === 'production') {
-      throw new ForbiddenException('This endpoint is only available in development mode.');
+      throw new ForbiddenException(
+        'This endpoint is only available in development mode.',
+      );
     }
 
     const orderNumber = `BRW-TEST-${Date.now()}`;

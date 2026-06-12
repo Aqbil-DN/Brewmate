@@ -66,7 +66,7 @@ export class OrdersService {
       const product = await this.prisma.product.findUnique({
         where: { id: cartItem.productId },
       });
-      
+
       if (!product || product.status !== 'active' || !product.isAvailable) {
         throw new BadRequestException({
           code: AppErrorCodes.PRODUCT_UNAVAILABLE,
@@ -79,7 +79,11 @@ export class OrdersService {
         const variant = await this.prisma.productVariant.findUnique({
           where: { id: cartItem.variantId },
         });
-        if (!variant || variant.productId !== product.id || !variant.isAvailable) {
+        if (
+          !variant ||
+          variant.productId !== product.id ||
+          !variant.isAvailable
+        ) {
           throw new BadRequestException({
             code: AppErrorCodes.PRODUCT_VARIANT_UNAVAILABLE,
             message: `Variant ${cartItem.variantName} for product ${cartItem.name} is no longer available.`,
@@ -105,10 +109,11 @@ export class OrdersService {
     let appliedPromoCode: string | null = null;
 
     if (dto.promoCode) {
-      const promoResult = await this.promotionsService.validateAndCalculatePromo({
-        code: dto.promoCode,
-        cartSubtotal: cartData.subtotal,
-      });
+      const promoResult =
+        await this.promotionsService.validateAndCalculatePromo({
+          code: dto.promoCode,
+          cartSubtotal: cartData.subtotal,
+        });
       discountAmount = promoResult.discountAmount;
       finalSubtotal = promoResult.finalSubtotal;
       appliedPromoCode = promoResult.code;
@@ -230,7 +235,13 @@ export class OrdersService {
     };
   }
 
-  async getUserOrders(userId: string, page = 1, limit = 20, status?: string, paymentStatus?: string) {
+  async getUserOrders(
+    userId: string,
+    page = 1,
+    limit = 20,
+    status?: string,
+    paymentStatus?: string,
+  ) {
     const skip = (page - 1) * limit;
 
     const where: Prisma.OrderWhereInput = {

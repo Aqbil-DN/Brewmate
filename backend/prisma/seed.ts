@@ -483,7 +483,6 @@ async function main() {
     update: {
       passwordHash: hashedPassword,
       fullName: 'Demo User',
-      phoneNumber: '+6281234567890',
       isVerified: true,
       isActive: true,
     },
@@ -491,7 +490,7 @@ async function main() {
       email: demoEmail,
       passwordHash: hashedPassword,
       fullName: 'Demo User',
-      phoneNumber: '+6281234567890',
+      phoneNumber: '+628000000000', // Unique dummy number for seed
       authProvider: AuthProvider.email,
       isVerified: true,
       isActive: true,

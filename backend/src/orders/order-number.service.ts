@@ -15,15 +15,23 @@ export class OrderNumberService {
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const day = String(now.getDate()).padStart(2, '0');
     const datePrefix = `${year}${month}${day}`;
-    
+
     const prefix = `BRW-${datePrefix}-`;
 
     // MVP implementation: count orders today and increment
     // Note: For high concurrency, a sequence table or atomic counter is better,
     // but for MVP counting today's orders is sufficient.
-    
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+    const startOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+    );
+    const endOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1,
+    );
 
     const count = await this.prisma.order.count({
       where: {
@@ -36,7 +44,7 @@ export class OrderNumberService {
 
     // If count is 0, start at 1. Pad to 4 digits.
     const sequence = String(count + 1).padStart(4, '0');
-    
+
     let orderNumber = `${prefix}${sequence}`;
 
     // Handle collision explicitly (just in case of race conditions without locks)
@@ -61,7 +69,9 @@ export class OrderNumberService {
 
     if (!isUnique) {
       // Fallback: append a random string to guarantee uniqueness
-      const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+      const random = Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, '0');
       orderNumber = `${prefix}${String(currentSequence).padStart(4, '0')}-${random}`;
     }
 

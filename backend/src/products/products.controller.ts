@@ -37,4 +37,3 @@ export class ProductsController {
     return this.productsService.getProductDetail(id);
   }
 }
-

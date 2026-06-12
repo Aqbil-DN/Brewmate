@@ -1,4 +1,10 @@
-import { IsString, IsOptional, IsEnum, MaxLength, IsUUID } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsEnum,
+  MaxLength,
+  IsUUID,
+} from 'class-validator';
 
 export enum OrderType {
   DINE_IN = 'dine_in',

@@ -81,7 +81,9 @@ export class CartService {
     let unitPrice = Number(product.basePrice.toString());
 
     if (dto.variantId) {
-      const variant = product.productVariants.find((v) => v.id === dto.variantId);
+      const variant = product.productVariants.find(
+        (v) => v.id === dto.variantId,
+      );
       if (!variant) {
         throw new NotFoundException({
           code: AppErrorCodes.PRODUCT_VARIANT_NOT_FOUND,

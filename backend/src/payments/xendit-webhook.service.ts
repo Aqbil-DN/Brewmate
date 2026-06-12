@@ -20,7 +20,9 @@ export class XenditWebhookService {
     const reference = this.extractReference(unwrapped);
     const mappedStatus = this.mapXenditStatusToPaymentStatus(unwrapped);
 
-    this.logger.log(`Processing webhook: mappedStatus=${mappedStatus}, ref=${reference}`);
+    this.logger.log(
+      `Processing webhook: mappedStatus=${mappedStatus}, ref=${reference}`,
+    );
 
     if (!reference) {
       this.logger.warn('Webhook payload missing valid reference/external_id');
@@ -46,12 +48,17 @@ export class XenditWebhookService {
 
     if (!order) {
       this.logger.warn(`Order not found for reference: ${reference}`);
-      return { success: true, message: 'Webhook received but order was not found.' };
+      return {
+        success: true,
+        message: 'Webhook received but order was not found.',
+      };
     }
 
     // 5. Idempotency Check
     if (order.paymentStatus === mappedStatus) {
-      this.logger.log(`Order ${order.orderNumber} already has paymentStatus ${mappedStatus}. Skipping.`);
+      this.logger.log(
+        `Order ${order.orderNumber} already has paymentStatus ${mappedStatus}. Skipping.`,
+      );
       return { success: true, message: 'Already processed' };
     }
 
@@ -90,7 +97,13 @@ export class XenditWebhookService {
   }
 
   private extractReference(payload: any): string | null {
-    return payload.external_id || payload.reference_id || payload.invoice_id || payload.id || null;
+    return (
+      payload.external_id ||
+      payload.reference_id ||
+      payload.invoice_id ||
+      payload.id ||
+      null
+    );
   }
 
   private mapXenditStatusToPaymentStatus(payload: any): PaymentStatus {
@@ -99,7 +112,9 @@ export class XenditWebhookService {
 
     // Paid
     if (
-      ['PAID', 'SETTLED', 'SUCCEEDED', 'SUCCESS', 'COMPLETED'].includes(status) ||
+      ['PAID', 'SETTLED', 'SUCCEEDED', 'SUCCESS', 'COMPLETED'].includes(
+        status,
+      ) ||
       event.includes('.paid') ||
       event.includes('.succeeded')
     ) {
@@ -182,7 +197,9 @@ export class XenditWebhookService {
         });
 
         // Update recommendation events
-        const productIdsInOrder = order.orderItems.map((item: any) => item.productId);
+        const productIdsInOrder = order.orderItems.map(
+          (item: any) => item.productId,
+        );
         if (productIdsInOrder.length > 0) {
           await tx.aiRecommendationEvent.updateMany({
             where: {

@@ -17,10 +17,7 @@ export class CoffeeMatchController {
 
   @Post('chat')
   @UseGuards(OptionalJwtAuthGuard)
-  async submitChat(
-    @CurrentUser() user: JwtUser | null,
-    @Body() dto: ChatDto
-  ) {
+  async submitChat(@CurrentUser() user: JwtUser | null, @Body() dto: ChatDto) {
     const userId = user ? user.id : null;
     return this.coffeeMatchService.submitChat(userId, dto);
   }
@@ -29,7 +26,7 @@ export class CoffeeMatchController {
   @UseGuards(OptionalJwtAuthGuard)
   async submitQuiz(
     @CurrentUser() user: JwtUser | null,
-    @Body() dto: SubmitQuizDto
+    @Body() dto: SubmitQuizDto,
   ) {
     const userId = user ? user.id : null;
     return this.coffeeMatchService.submitQuiz(userId, dto);
@@ -40,7 +37,7 @@ export class CoffeeMatchController {
   async addRecommendationToCart(
     @CurrentUser() user: JwtUser,
     @Param('eventId') eventId: string,
-    @Body() dto: AddRecommendationToCartDto
+    @Body() dto: AddRecommendationToCartDto,
   ) {
     return this.coffeeMatchService.addToCart(user.id, eventId, dto);
   }
@@ -49,7 +46,7 @@ export class CoffeeMatchController {
   @UseGuards(OptionalJwtAuthGuard)
   async completeSession(
     @CurrentUser() user: JwtUser | null,
-    @Param('sessionId') sessionId: string
+    @Param('sessionId') sessionId: string,
   ) {
     const userId = user ? user.id : null;
     return this.coffeeMatchService.completeSession(userId, sessionId);

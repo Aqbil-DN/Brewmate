@@ -61,4 +61,3 @@ import { AiModule } from './ai/ai.module.js';
   providers: [AppService],
 })
 export class AppModule {}
-

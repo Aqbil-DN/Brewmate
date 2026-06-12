@@ -50,7 +50,8 @@ export class RecommendationScoringService {
       // user wants premium, product is regular/budget -> compatible
       if (
         (quiz.budgetAnswer === 'regular' && attr.budgetTier === 'budget') ||
-        (quiz.budgetAnswer === 'premium' && (attr.budgetTier === 'regular' || attr.budgetTier === 'budget'))
+        (quiz.budgetAnswer === 'premium' &&
+          (attr.budgetTier === 'regular' || attr.budgetTier === 'budget'))
       ) {
         score += 8;
       }
@@ -64,19 +65,25 @@ export class RecommendationScoringService {
     // 6. Specific Pairings Bonus
     // stay_awake + caffeineLevel >= 7: +5
     if (quiz.needAnswer === 'stay_awake' && attr.caffeineLevel >= 7) score += 5;
-    
+
     // focus + caffeineLevel >= 6: +4
     if (quiz.needAnswer === 'focus' && attr.caffeineLevel >= 6) score += 4;
-    
+
     // sweet_craving + sweetnessLevel >= 7: +5
-    if (quiz.needAnswer === 'sweet_craving' && attr.sweetnessLevel >= 7) score += 5;
-    
+    if (quiz.needAnswer === 'sweet_craving' && attr.sweetnessLevel >= 7)
+      score += 5;
+
     // flavor strong + strengthLevel >= 7: +5
     if (quiz.flavorAnswer === 'strong' && attr.strengthLevel >= 7) score += 5;
-    
+
     // flavor creamy + sweetnessLevel between 3 and 8: +3
-    if (quiz.flavorAnswer === 'creamy' && attr.sweetnessLevel >= 3 && attr.sweetnessLevel <= 8) score += 3;
-    
+    if (
+      quiz.flavorAnswer === 'creamy' &&
+      attr.sweetnessLevel >= 3 &&
+      attr.sweetnessLevel <= 8
+    )
+      score += 3;
+
     // flavor fresh + sweetnessLevel <= 5: +3
     if (quiz.flavorAnswer === 'fresh' && attr.sweetnessLevel <= 5) score += 3;
 
