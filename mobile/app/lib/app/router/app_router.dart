@@ -13,6 +13,8 @@ import '../../features/orders/presentation/orders_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/coffee_match/presentation/coffee_match_entry_screen.dart';
 import '../../features/catalogue/presentation/product_detail_screen.dart';
+import '../../features/checkout/presentation/checkout_screen.dart';
+import '../../features/checkout/presentation/payment_redirect_screen.dart';
 
 import 'route_names.dart';
 
@@ -120,6 +122,16 @@ GoRouter appRouter(Ref ref) {
           final id = state.pathParameters['id']!;
           return ProductDetailScreen(productId: id);
         },
+      ),
+      GoRoute(
+        path: '/checkout',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const CheckoutScreen(),
+      ),
+      GoRoute(
+        path: '/payment/redirect',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const PaymentRedirectScreen(),
       ),
     ],
   );

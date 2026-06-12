@@ -28,7 +28,24 @@ abstract class CartItem with _$CartItem {
   }) = _CartItem;
 
   factory CartItem.fromJson(Map<String, dynamic> json) =>
-      _$CartItemFromJson(json);
+      _$CartItemFromJson(_preprocess(json));
+
+  static Map<String, dynamic> _preprocess(Map<String, dynamic> json) {
+    final Map<String, dynamic> processedJson = Map<String, dynamic>.from(json);
+    
+    // Support nested product shape
+    if (processedJson['product'] != null && processedJson['product'] is Map) {
+      processedJson['name'] ??= processedJson['product']['name'];
+      processedJson['imageUrl'] ??= processedJson['product']['imageUrl'];
+    }
+    
+    // Support nested variant shape
+    if (processedJson['variant'] != null && processedJson['variant'] is Map) {
+      processedJson['variantName'] ??= processedJson['variant']['name'];
+    }
+
+    return processedJson;
+  }
 }
 
 @freezed
