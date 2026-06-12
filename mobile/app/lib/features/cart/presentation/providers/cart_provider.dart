@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/api/dio_provider.dart';
 import '../../data/datasources/cart_remote_datasource.dart';
 import '../../data/repositories/cart_repository_impl.dart';
@@ -8,13 +9,13 @@ import '../../domain/repositories/cart_repository.dart';
 part 'cart_provider.g.dart';
 
 @riverpod
-CartRemoteDataSource cartRemoteDataSource(CartRemoteDataSourceRef ref) {
+CartRemoteDataSource cartRemoteDataSource(Ref ref) {
   final dio = ref.watch(dioProvider);
   return CartRemoteDataSource(dio);
 }
 
 @riverpod
-CartRepository cartRepository(CartRepositoryRef ref) {
+CartRepository cartRepository(Ref ref) {
   final remoteDataSource = ref.watch(cartRemoteDataSourceProvider);
   return CartRepositoryImpl(remoteDataSource);
 }

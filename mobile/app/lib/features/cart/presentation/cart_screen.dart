@@ -13,10 +13,46 @@ class CartScreen extends ConsumerWidget {
     final cartState = ref.watch(cartControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('My Cart'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('My Cart'),
+        centerTitle: true,
+        actions: [
+          if (cartState.value?.items.isNotEmpty == true)
+            IconButton(
+              icon: const Icon(Icons.delete_sweep, color: Colors.red),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Clear Cart'),
+                    content: const Text(
+                      'Are you sure you want to clear your entire cart?',
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          ref.read(cartControllerProvider.notifier).clearCart();
+                        },
+                        child: const Text(
+                          'Clear All',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
       body: cartState.when(
         data: (cart) {
-          if (cart.cartItems.isEmpty) {
+          if (cart.items.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -38,21 +74,16 @@ class CartScreen extends ConsumerWidget {
             );
           }
 
-          double subtotal = 0;
-          for (final item in cart.cartItems) {
-            subtotal += item.unitPrice * item.quantity;
-          }
-
           return Column(
             children: [
               Expanded(
                 child: ListView.separated(
                   padding: const EdgeInsets.all(16),
-                  itemCount: cart.cartItems.length,
+                  itemCount: cart.items.length,
                   separatorBuilder: (context, index) =>
                       const SizedBox(height: 16),
                   itemBuilder: (context, index) {
-                    final item = cart.cartItems[index];
+                    final item = cart.items[index];
                     return _buildCartItemCard(context, ref, item);
                   },
                 ),
@@ -77,9 +108,12 @@ class CartScreen extends ConsumerWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Subtotal', style: AppTextStyles.titleMedium),
                           Text(
-                            CurrencyFormatter.formatRupiah(subtotal),
+                            'Subtotal (${cart.itemCount} items)',
+                            style: AppTextStyles.titleMedium,
+                          ),
+                          Text(
+                            CurrencyFormatter.formatRupiah(cart.subtotal),
                             style: AppTextStyles.headlineSmall.copyWith(
                               color: AppColors.primary,
                               fontWeight: FontWeight.bold,
@@ -155,14 +189,14 @@ class CartScreen extends ConsumerWidget {
             decoration: BoxDecoration(
               color: AppColors.surfaceVariant,
               borderRadius: BorderRadius.circular(8),
-              image: item.product?.imageUrl != null
+              image: item.imageUrl != null
                   ? DecorationImage(
-                      image: NetworkImage(item.product!.imageUrl!),
+                      image: NetworkImage(item.imageUrl!),
                       fit: BoxFit.cover,
                     )
                   : null,
             ),
-            child: item.product?.imageUrl == null
+            child: item.imageUrl == null
                 ? const Icon(Icons.coffee, color: Colors.white)
                 : null,
           ),
@@ -173,23 +207,33 @@ class CartScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.product?.name ?? 'Unknown Product',
+                  item.productName,
                   style: AppTextStyles.titleMedium.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                if (item.variant != null) ...[
+                if (item.variantName != null) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Variant: ${item.variant!.name}',
+                    'Variant: ${item.variantName}',
                     style: AppTextStyles.labelMedium.copyWith(
                       color: AppColors.textSecondary,
                     ),
                   ),
                 ],
+                if (item.specialInstructions != null) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Note: ${item.specialInstructions}',
+                    style: AppTextStyles.labelMedium.copyWith(
+                      color: AppColors.textSecondary,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Text(
-                  CurrencyFormatter.formatRupiah(item.unitPrice),
+                  CurrencyFormatter.formatRupiah(item.lineTotal),
                   style: AppTextStyles.titleMedium.copyWith(
                     color: AppColors.primary,
                     fontWeight: FontWeight.bold,
@@ -207,10 +251,34 @@ class CartScreen extends ConsumerWidget {
                               .read(cartControllerProvider.notifier)
                               .updateQuantity(item.id, item.quantity - 1);
                         } else {
-                          // Confirm remove
-                          ref
-                              .read(cartControllerProvider.notifier)
-                              .removeItem(item.id);
+                          // Ask confirmation dialog
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Remove Item'),
+                              content: const Text(
+                                'Remove this item from cart?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    ref
+                                        .read(cartControllerProvider.notifier)
+                                        .removeItem(item.id);
+                                  },
+                                  child: const Text(
+                                    'Remove',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       },
                     ),
@@ -226,18 +294,42 @@ class CartScreen extends ConsumerWidget {
                     _buildIconButton(
                       icon: Icons.add,
                       onPressed: () {
-                        ref
-                            .read(cartControllerProvider.notifier)
-                            .updateQuantity(item.id, item.quantity + 1);
+                        if (item.quantity < 99) {
+                          ref
+                              .read(cartControllerProvider.notifier)
+                              .updateQuantity(item.id, item.quantity + 1);
+                        }
                       },
                     ),
                     const Spacer(),
                     IconButton(
                       icon: const Icon(Icons.delete_outline, color: Colors.red),
                       onPressed: () {
-                        ref
-                            .read(cartControllerProvider.notifier)
-                            .removeItem(item.id);
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Remove Item'),
+                            content: const Text('Remove this item from cart?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  ref
+                                      .read(cartControllerProvider.notifier)
+                                      .removeItem(item.id);
+                                },
+                                child: const Text(
+                                  'Remove',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
                       },
                     ),
                   ],

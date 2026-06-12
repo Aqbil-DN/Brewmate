@@ -1,6 +1,6 @@
 import '../../domain/entities/cart.dart';
 import '../../domain/repositories/cart_repository.dart';
-import 'cart_remote_datasource.dart';
+import '../datasources/cart_remote_datasource.dart';
 
 class CartRepositoryImpl implements CartRepository {
   final CartRemoteDataSource _remoteDataSource;

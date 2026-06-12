@@ -9,6 +9,10 @@ class AppTextStyles {
     fontSize: 20,
     fontWeight: FontWeight.bold,
   );
+  static const titleLarge = TextStyle(
+    fontSize: 22,
+    fontWeight: FontWeight.normal,
+  );
   static const titleMedium = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.w600,
@@ -29,12 +33,21 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.normal,
   );
-  static const labelLarge = TextStyle(
+  static const TextStyle labelLarge = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.bold,
-  );
-  static const labelSmall = TextStyle(
-    fontSize: 10,
     fontWeight: FontWeight.w500,
+    letterSpacing: 0.1,
+  );
+
+  static const TextStyle labelMedium = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
+  );
+
+  static const TextStyle labelSmall = TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.5,
   );
 }

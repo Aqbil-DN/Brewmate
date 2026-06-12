@@ -10,41 +10,21 @@ double _parsePrice(dynamic value) {
 }
 
 @freezed
-abstract class CartProduct with _$CartProduct {
-  const factory CartProduct({
-    required String name,
-    String? imageUrl,
-    @Default(true) bool isAvailable,
-  }) = _CartProduct;
-
-  factory CartProduct.fromJson(Map<String, dynamic> json) =>
-      _$CartProductFromJson(json);
-}
-
-@freezed
-abstract class CartVariant with _$CartVariant {
-  const factory CartVariant({
-    required String name,
-    @Default(true) bool isAvailable,
-  }) = _CartVariant;
-
-  factory CartVariant.fromJson(Map<String, dynamic> json) =>
-      _$CartVariantFromJson(json);
-}
-
-@freezed
 abstract class CartItem with _$CartItem {
   const factory CartItem({
     required String id,
-    required String cartId,
     required String productId,
     String? variantId,
-    required int quantity,
+    @JsonKey(name: 'name') required String productName,
+    String? variantName,
+    String? imageUrl,
     @JsonKey(fromJson: _parsePrice) @Default(0.0) double unitPrice,
+    required int quantity,
+    @JsonKey(name: 'lineSubtotal', fromJson: _parsePrice)
+    @Default(0.0)
+    double lineTotal,
     String? specialInstructions,
-    required DateTime addedAt,
-    CartProduct? product,
-    CartVariant? variant,
+    @Default(true) bool isAvailable,
   }) = _CartItem;
 
   factory CartItem.fromJson(Map<String, dynamic> json) =>
@@ -54,9 +34,10 @@ abstract class CartItem with _$CartItem {
 @freezed
 abstract class Cart with _$Cart {
   const factory Cart({
-    required String id,
-    required String userId,
-    @Default([]) List<CartItem> cartItems,
+    String? id,
+    @Default([]) List<CartItem> items,
+    @JsonKey(fromJson: _parsePrice) @Default(0.0) double subtotal,
+    @Default(0) int itemCount,
   }) = _Cart;
 
   factory Cart.fromJson(Map<String, dynamic> json) => _$CartFromJson(json);

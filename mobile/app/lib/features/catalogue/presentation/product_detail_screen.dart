@@ -19,6 +19,15 @@ class ProductDetailScreen extends ConsumerStatefulWidget {
 
 class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   String? _selectedVariantId;
+  int _quantity = 1;
+  final TextEditingController _specialInstructionsController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _specialInstructionsController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +174,88 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                             ),
                             const SizedBox(height: 24),
                           ],
+                          // Quantity Selector
+                          Text(
+                            'Quantity',
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: _quantity > 1
+                                    ? () {
+                                        setState(() {
+                                          _quantity--;
+                                        });
+                                      }
+                                    : null,
+                                icon: const Icon(Icons.remove_circle_outline),
+                                color: AppColors.primary,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: Text(
+                                  '$_quantity',
+                                  style: AppTextStyles.titleLarge.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: _quantity < 99
+                                    ? () {
+                                        setState(() {
+                                          _quantity++;
+                                        });
+                                      }
+                                    : null,
+                                icon: const Icon(Icons.add_circle_outline),
+                                color: AppColors.primary,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+                          // Special Instructions
+                          Text(
+                            'Special Instructions',
+                            style: AppTextStyles.titleMedium.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          TextField(
+                            controller: _specialInstructionsController,
+                            decoration: InputDecoration(
+                              hintText: 'e.g., Less ice, extra sugar...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: AppColors.surfaceVariant,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                  color: AppColors.surfaceVariant,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.all(16),
+                            ),
+                            maxLines: 2,
+                            maxLength: 255,
+                          ),
+                          const SizedBox(height: 24),
                           // Variants
                           if (product.variants.isNotEmpty) ...[
                             Text(
@@ -226,12 +317,19 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   child: ElevatedButton(
                     onPressed: product.isAvailable
                         ? () {
+                            final specialInstructions =
+                                _specialInstructionsController.text.trim();
+
                             ref
                                 .read(cartControllerProvider.notifier)
                                 .addItem(
                                   productId: product.id,
                                   variantId: _selectedVariantId,
-                                  quantity: 1, // Default 1
+                                  quantity: _quantity,
+                                  specialInstructions:
+                                      specialInstructions.isEmpty
+                                      ? null
+                                      : specialInstructions,
                                 );
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
