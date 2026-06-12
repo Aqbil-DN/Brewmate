@@ -8,4 +8,5 @@ class RouteNames {
   static const orders = 'orders';
   static const profile = 'profile';
   static const coffeeMatch = 'coffee-match';
+  static const productDetail = 'product-detail';
 }

@@ -12,6 +12,7 @@ import '../../features/cart/presentation/cart_screen.dart';
 import '../../features/orders/presentation/orders_screen.dart';
 import '../../features/profile/presentation/profile_screen.dart';
 import '../../features/coffee_match/presentation/coffee_match_entry_screen.dart';
+import '../../features/catalogue/presentation/product_detail_screen.dart';
 
 import 'route_names.dart';
 
@@ -110,6 +111,15 @@ GoRouter appRouter(Ref ref) {
         name: RouteNames.coffeeMatch,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const CoffeeMatchEntryScreen(),
+      ),
+      GoRoute(
+        path: '/products/:id',
+        name: RouteNames.productDetail,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) {
+          final id = state.pathParameters['id']!;
+          return ProductDetailScreen(productId: id);
+        },
       ),
     ],
   );

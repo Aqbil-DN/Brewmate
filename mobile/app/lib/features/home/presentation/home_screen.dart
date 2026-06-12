@@ -142,6 +142,33 @@ class HomeDashboardScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            Card(
+              color: const Color(0xFFE8F5E9),
+              child: InkWell(
+                onTap: () => context.push('/catalogue'),
+                borderRadius: BorderRadius.circular(20),
+                child: const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Browse Menu ☕',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Explore our full catalogue of handcrafted beverages and snacks.',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

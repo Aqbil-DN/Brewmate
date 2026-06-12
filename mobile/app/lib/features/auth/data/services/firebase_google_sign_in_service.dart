@@ -21,9 +21,8 @@ class FirebaseGoogleSignInService {
         final provider = GoogleAuthProvider();
         // Force account selection every time on Web
         provider.setCustomParameters({'prompt': 'select_account'});
-        
-        final userCredential =
-            await _firebaseAuth.signInWithPopup(provider);
+
+        final userCredential = await _firebaseAuth.signInWithPopup(provider);
         firebaseUser = userCredential.user;
       } catch (e) {
         throw ApiException(
@@ -50,8 +49,8 @@ class FirebaseGoogleSignInService {
         idToken: googleAuth.idToken,
       );
 
-      final UserCredential userCredential =
-          await _firebaseAuth.signInWithCredential(credential);
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithCredential(credential);
       firebaseUser = userCredential.user;
     }
 
