@@ -27,5 +27,28 @@ abstract class Order with _$Order {
     required DateTime placedAt,
   }) = _Order;
 
-  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
+  factory Order.fromJson(Map<String, dynamic> json) =>
+      _$OrderFromJson(_preprocess(json));
+
+  static Map<String, dynamic> _preprocess(Map<String, dynamic> json) {
+    final Map<String, dynamic> processedJson = Map<String, dynamic>.from(json);
+
+    // Support nested "order" object
+    if (processedJson['order'] != null && processedJson['order'] is Map) {
+      final orderMap = processedJson['order'] as Map<String, dynamic>;
+      processedJson.addAll(orderMap);
+    }
+
+    // Support nested "payment" object
+    if (processedJson['payment'] != null && processedJson['payment'] is Map) {
+      final paymentMap = processedJson['payment'] as Map<String, dynamic>;
+      processedJson['paymentUrl'] ??= paymentMap['paymentUrl'];
+      processedJson['paymentReference'] ??= paymentMap['externalId'];
+    }
+
+    // Support "subtotal" instead of "subtotalAmount"
+    processedJson['subtotalAmount'] ??= processedJson['subtotal'];
+
+    return processedJson;
+  }
 }
